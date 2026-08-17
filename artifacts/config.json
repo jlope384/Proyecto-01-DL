@@ -4,8 +4,9 @@
     128,
     64
   ],
-  "dropout": 0.2,
+  "dropout": 0.3,
   "batchnorm": true,
+  "n_members": 5,
   "log_target": true,
   "scale_target": true,
   "mean": 12.031723976135254,

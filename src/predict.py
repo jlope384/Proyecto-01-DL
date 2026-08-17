@@ -1,9 +1,12 @@
 """Genera predicciones de SalePrice sobre un CSV nuevo usando los artifacts
-guardados por notebooks/03_final_model.ipynb (pesos + preprocessor + config).
+guardados por notebooks/03_final_model.ipynb (ensamble de pesos +
+preprocessor + config).
 
 Pensado para el día de la competencia: recibe el dataset held-out, aplica el
-mismo pipeline de preprocesamiento que se usó en entrenamiento y calcula RMSE
-si el CSV trae la columna SalePrice.
+mismo pipeline de preprocesamiento que se usó en entrenamiento, promedia las
+predicciones de los `n_members` modelos del ensamble (bagging, reduce
+varianza frente a un único modelo) y calcula RMSE si el CSV trae la columna
+SalePrice.
 
 Uso:
     python src/predict.py --input data/train.csv --output predictions.csv
@@ -29,24 +32,30 @@ def load_artifacts():
     preprocessor = joblib.load(ARTIFACTS_DIR / "preprocessor.joblib")
     config = json.loads((ARTIFACTS_DIR / "config.json").read_text())
 
-    model = MLP(
-        input_dim=config["input_dim"],
-        hidden_sizes=config["hidden_sizes"],
-        dropout=config["dropout"],
-        batchnorm=config["batchnorm"],
-    )
-    model.load_state_dict(torch.load(ARTIFACTS_DIR / "model.pt", map_location="cpu"))
-    model.eval()
-    return preprocessor, model, config
+    members = []
+    for m in range(config["n_members"]):
+        model = MLP(
+            input_dim=config["input_dim"],
+            hidden_sizes=config["hidden_sizes"],
+            dropout=config["dropout"],
+            batchnorm=config["batchnorm"],
+        )
+        model.load_state_dict(torch.load(ARTIFACTS_DIR / f"model_{m}.pt", map_location="cpu"))
+        model.eval()
+        members.append(model)
+    return preprocessor, members, config
 
 
 def predict(df: pd.DataFrame) -> np.ndarray:
-    preprocessor, model, config = load_artifacts()
+    preprocessor, members, config = load_artifacts()
     clean = prepare_raw(df)
-    X = preprocessor.transform(clean)
+    X = torch.as_tensor(preprocessor.transform(clean), dtype=torch.float32)
+    member_preds = []
     with torch.no_grad():
-        preds = model(torch.as_tensor(X, dtype=torch.float32)).numpy().ravel()
-    return inverse_transform_target(preds, config)
+        for model in members:
+            preds = model(X).numpy().ravel()
+            member_preds.append(inverse_transform_target(preds, config))
+    return np.mean(member_preds, axis=0)
 
 
 def main():

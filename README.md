@@ -1,7 +1,8 @@
 # Proyecto 1: Competencia de Modelación (CC3092)
 
 MLP en PyTorch para predecir `SalePrice` sobre el dataset Ames Housing.
-RMSE final sobre held-out simulado: **$18,264.76** (ver `docs/informe.md`).
+Modelo final: ensamble de 5 MLPs (bagging). RMSE final sobre held-out
+simulado: **$16,755.79** (ver `docs/informe.md`).
 
 ## Setup
 
@@ -27,7 +28,7 @@ src/
   predict.py               script para generar predicciones sobre un CSV nuevo
 experiments/
   experiments_log.csv     tabla de iteraciones (train/val RMSE, cambios, notas)
-artifacts/                 preprocessor.joblib, model.pt, config.json (modelo final)
+artifacts/                 preprocessor.joblib, model_0..model_4.pt (ensamble), config.json
 docs/
   informe.md               trabajo escrito (secciones 2.1-2.6 del enunciado)
 ```
