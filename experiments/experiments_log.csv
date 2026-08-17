@@ -1,0 +1,9 @@
+iteration_id,description,changes_vs_previous,hidden_sizes,dropout,batchnorm,log_target,scale_target,optimizer,lr,weight_decay,epochs_trained,train_rmse,val_rmse,notes
+iter7_remove_outliers,Igual que iter6 pero sin los outliers de GrLivArea,vs iter6: remueve las 2 casas grandes y baratas detectadas en el EDA,"(128, 64)",0.2,True,True,True,Adam,0.001,0.0001,49,11455.91,20453.85,
+iter8_final,"Igual que la mejor combinación anterior, con más épocas/paciencia",vs mejor iteración anterior: más tiempo de entrenamiento para asentar la convergencia,"(128, 64)",0.2,True,True,True,Adam,0.001,0.0001,103,9053.61,20571.22,
+iter5_log_target,Igual que iter4 pero con log1p(SalePrice) + estandarizado,"vs iter4: prueba target log (SalePrice está sesgado a la derecha, ver EDA)","(128, 64)",0.2,True,True,True,Adam,0.001,0.0,54,13538.27,26636.58,
+iter6_weight_decay,Igual que la mejor de iter4/iter5 + weight decay 1e-4,vs iter5: agrega L2 (weight_decay) al optimizador,"(128, 64)",0.2,True,True,True,Adam,0.001,0.0001,54,13459.73,26838.29,
+iter4_target_scaling_FIX,Igual que iter3 pero con el target estandarizado,vs iter3: corrige el estancamiento estandarizando SalePrice antes de entrenar,"(128, 64)",0.2,True,False,True,Adam,0.001,0.0,54,12527.83,27618.27,
+iter2_wider_deeper,"MLP más grande (128, 64)",vs iter1: más capas/neuronas,"(128, 64)",0.0,False,False,False,Adam,0.001,0.0,210,28095.72,29234.98,
+iter1_baseline,"MLP simple, sin regularización, target crudo",punto de partida,"(64,)",0.0,False,False,False,Adam,0.001,0.0,300,63165.97,64544.12,
+iter3_regularized_FAILS,"Igual que iter2 + dropout 0.2 + batchnorm, target crudo",vs iter2: agrega dropout y batchnorm para controlar overfitting,"(128, 64)",0.2,True,False,False,Adam,0.001,0.0,300,186005.34,189608.09,

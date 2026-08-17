@@ -1,0 +1,13 @@
+{
+  "input_dim": 237,
+  "hidden_sizes": [
+    128,
+    64
+  ],
+  "dropout": 0.2,
+  "batchnorm": true,
+  "log_target": true,
+  "scale_target": true,
+  "mean": 12.031723976135254,
+  "std": 0.3860834538936615
+}
