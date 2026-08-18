@@ -67,7 +67,7 @@ def main():
     df = pd.read_csv(args.input)
     preds = predict(df)
 
-    out = pd.DataFrame({ID_COL: df[ID_COL], "SalePrice": preds})
+    out = pd.DataFrame({ID_COL: df[ID_COL], "Prediction": preds})
     out.to_csv(args.output, index=False)
     print(f"Predicciones guardadas en {args.output}")
 
